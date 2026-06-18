@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in — RemoteJobs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="auth-shell">
+  <div class="auth-shell__visual">
+    <a href="index.html" class="logo" style="color:#fff;"><span class="logo__mark"></span>RemoteJobs</a>
+    <div>
+      <div class="eyebrow">Member access</div>
+      <h1 style="font-family:var(--font-display);font-size:2.2rem;font-weight:700;line-height:1.15;margin-bottom:14px;">Your daily job links are waiting.</h1>
+      <p style="color:var(--slate-light);max-width:380px;">Log in to view today's links, manage your subscription, and track your applications.</p>
+    </div>
+    <div style="font-size:0.85rem;color:var(--slate-light);">Questions? <a href="mailto:hankforster96@gmail.com" style="color:var(--orange);font-weight:600;">hankforster96@gmail.com</a></div>
+  </div>
+
+  <div class="auth-shell__form">
+    <div class="auth-card">
+
+      <!-- LOGIN -->
+      <div id="login-view">
+        <h1>Welcome back</h1>
+        <p class="sub">Log in to your RemoteJobs account.</p>
+        <form id="login-form">
+          <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com" required></div>
+          <div class="field"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" required></div>
+          <button type="submit" class="btn btn--primary btn--block" id="login-btn">Log in</button>
+        </form>
+        <p class="auth-foot mt-24">Don't have an account? <a href="#" id="show-signup">Sign up free</a></p>
+        <p class="auth-foot" style="font-size:0.8rem;color:var(--slate-light);margin-top:8px;">After paying via Paystack, create your account here with the same email you used to pay.</p>
+      </div>
+
+      <!-- SIGNUP -->
+      <div id="signup-view" class="hidden">
+        <h1>Create your account</h1>
+        <p class="sub">Use the same email you used to pay on Paystack.</p>
+        <form id="signup-form">
+          <div class="field"><label>Email</label><input type="email" id="signup-email" placeholder="you@example.com" required></div>
+          <div class="field"><label>Password</label><input type="password" id="signup-password" placeholder="At least 6 characters" minlength="6" required></div>
+          <button type="submit" class="btn btn--primary btn--block" id="signup-btn">Create account</button>
+        </form>
+        <p class="auth-foot mt-24">Already have an account? <a href="#" id="show-login">Log in</a></p>
+        <p class="auth-foot" style="font-size:0.8rem;color:var(--slate-light);margin-top:8px;">Haven't subscribed yet? <a href="index.html#pricing" style="color:var(--orange);">View plans →</a></p>
+      </div>
+
+      <!-- SUCCESS (shown after signup - waiting for email confirm) -->
+      <div id="confirm-view" class="hidden" style="text-align:center;padding:16px 0;">
+        <div style="font-size:3rem;margin-bottom:16px;">📬</div>
+        <h1 style="margin-bottom:8px;">Check your email</h1>
+        <p class="sub">We sent a confirmation link to your email. Click it to activate your account, then come back here to log in.</p>
+        <a href="#" id="back-to-login" class="btn btn--ghost btn--block mt-24">Back to login</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+<script>
+  // Pre-open signup if coming from pricing
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('mode') === 'signup') {
+    document.getElementById('login-view').classList.add('hidden');
+    document.getElementById('signup-view').classList.remove('hidden');
+  }
+
+  // Redirect if already logged in
+  getSession().then(session => {
+    if (session) window.location.href = 'dashboard.html';
+  });
+
+  document.getElementById('show-signup').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('login-view').classList.add('hidden');
+    document.getElementById('signup-view').classList.remove('hidden');
+  });
+  document.getElementById('show-login').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('signup-view').classList.add('hidden');
+    document.getElementById('login-view').classList.remove('hidden');
+  });
+  document.getElementById('back-to-login').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('confirm-view').classList.add('hidden');
+    document.getElementById('login-view').classList.remove('hidden');
+  });
+
+  // LOGIN
+  document.getElementById('login-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('login-btn');
+    btn.disabled = true; btn.textContent = 'Logging in…';
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const result = await logIn(email, password);
+    if (result.ok) {
+      toast('Welcome back!', 'success');
+      setTimeout(() => window.location.href = 'dashboard.html', 600);
+    } else {
+      toast(result.message, 'error');
+      btn.disabled = false; btn.textContent = 'Log in';
+    }
+  });
+
+  // SIGNUP
+  document.getElementById('signup-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('signup-btn');
+    btn.disabled = true; btn.textContent = 'Creating account…';
+    const email = document.getElementById('signup-email').value.trim();
+    const password = document.getElementById('signup-password').value;
+    const result = await signUp(email, password);
+    if (result.ok) {
+      document.getElementById('signup-view').classList.add('hidden');
+      document.getElementById('confirm-view').classList.remove('hidden');
+    } else {
+      toast(result.message, 'error');
+      btn.disabled = false; btn.textContent = 'Create account';
+    }
+  });
+</script>
+</body>
+</html>

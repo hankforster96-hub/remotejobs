@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RemoteJobs — Fresh remote job links, daily</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="logo"><span class="logo__mark"></span>RemoteJobs</a>
+    <div class="nav__links">
+      <a href="#how-it-works">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav__cta">
+      <a href="login.html" class="btn btn--ghost btn--sm">Log in</a>
+      <a href="#pricing" class="btn btn--primary btn--sm">Get started</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero__inner">
+    <div>
+      <div class="eyebrow">Curated daily, link by link</div>
+      <h1>Fresh remote job links, delivered to your <em>dashboard</em> every day.</h1>
+      <p class="lead">No noise, no duplicates. Pick a plan, get your daily quota of hand-checked remote job links. Pay securely with card or M-Pesa — subscribers worldwide welcome.</p>
+      <div class="hero__actions">
+        <a href="#pricing" class="btn btn--primary">View plans</a>
+        <a href="login.html" class="btn btn--ghost" style="color:#fff;border-color:var(--border-dark);">Member login</a>
+      </div>
+      <div class="hero__stats">
+        <div><div class="stat__num">5–20</div><div class="stat__label">Links / day by plan</div></div>
+        <div><div class="stat__num">🌍</div><div class="stat__label">Worldwide subscribers</div></div>
+        <div><div class="stat__num">$4+</div><div class="stat__label">Per month</div></div>
+      </div>
+    </div>
+    <div class="feed-card">
+      <div class="feed-card__head">
+        <span class="feed-card__title">Today's feed</span>
+        <span class="live-dot"><span class="live-dot__pulse"></span>Live</span>
+      </div>
+      <div class="feed-row"><div><div class="feed-row__role">Senior Frontend Engineer</div><div class="feed-row__meta">Vercel · $120k–$150k</div></div><span class="feed-row__tag">New</span></div>
+      <div class="feed-row"><div><div class="feed-row__role">Customer Support Specialist</div><div class="feed-row__meta">Doist · $38k–$46k</div></div><span class="feed-row__tag">New</span></div>
+      <div class="feed-row"><div><div class="feed-row__role">Backend Engineer (Go)</div><div class="feed-row__meta">Deel · $110k–$140k</div></div><span class="feed-row__tag">New</span></div>
+      <div class="feed-card__lock">🔒 Subscribe to unlock full links + direct apply URLs</div>
+    </div>
+  </div>
+</header>
+
+<section class="trust">
+  <div class="container trust__row">
+    <span>Remote-first</span>
+    <span>Hand-checked links</span>
+    <span>Updated daily</span>
+    <span>Pay by card or M-Pesa</span>
+    <span>Cancel anytime</span>
+  </div>
+</section>
+
+<!-- Payment methods badge -->
+<div style="background:#fff;border-bottom:1px solid var(--border);padding:16px 0;">
+  <div class="container" style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;">
+    <span style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate-light);font-family:var(--font-display);">Accepted worldwide</span>
+    <span style="font-size:0.9rem;font-weight:700;color:var(--navy);">💳 Visa</span>
+    <span style="font-size:0.9rem;font-weight:700;color:var(--navy);">💳 Mastercard</span>
+    <span style="font-size:0.9rem;font-weight:700;color:var(--navy);">💳 Amex</span>
+    <span style="font-size:0.9rem;font-weight:700;color:var(--navy);">📱 M-Pesa</span>
+    <span style="font-size:0.9rem;font-weight:700;color:var(--navy);">🍎 Apple Pay</span>
+  </div>
+</div>
+
+<section class="section" id="how-it-works">
+  <div class="container">
+    <div class="section-head"><div class="eyebrow">How it works</div><h2>Three steps to your next remote role</h2><p>We do the searching. You pick a plan, pay securely, and get straight to applying.</p></div>
+    <div class="steps">
+      <div class="step"><div class="step__num">STEP 1</div><h3>Choose a plan</h3><p>Pick 5, 13, or 20 fresh job links per day. From $4/month — pay by card, M-Pesa, or Apple Pay from anywhere in the world.</p></div>
+      <div class="step"><div class="step__num">STEP 2</div><h3>Pay via Paystack</h3><p>Click Subscribe below. A secure Paystack popup opens right here — no redirect. Takes 30 seconds. Your account activates immediately.</p></div>
+      <div class="step"><div class="step__num">STEP 3</div><h3>Open your dashboard daily</h3><p>Log in each day to see fresh job links up to your plan quota. Click straight through to apply.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight" style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border);" id="pricing">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Pricing</div>
+      <h2>Pick your daily link quota</h2>
+      <p>Monthly subscriptions · Billed via Paystack · Cancel anytime · Pay from anywhere worldwide</p>
+    </div>
+    <div class="pricing">
+
+      <!-- Starter -->
+      <div class="plan">
+        <div class="plan__name">Starter</div>
+        <div class="plan__price">$4<span>/mo</span></div>
+        <div class="plan__desc">For casual browsing — a steady trickle of fresh roles.</div>
+        <ul class="plan__features">
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>5 new job links per day</li>
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Daily refresh</li>
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Member dashboard</li>
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Card, M-Pesa, Apple Pay</li>
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Cancel anytime</li>
+        </ul>
+        <button class="btn btn--primary btn--block" onclick="goToPaystackCheckout('starter')">
+          Subscribe — $4/mo
+        </button>
+        <p style="font-size:0.75rem;color:var(--slate-light);text-align:center;margin-top:10px;">Powered by Paystack · Secure checkout</p>
+      </div>
+
+      <!-- Pro -->
+      <div class="plan plan--featured">
+        <span class="plan__badge">Most popular</span>
+        <div class="plan__name">Pro</div>
+        <div class="plan__price">$7<span>/mo</span></div>
+        <div class="plan__desc">For active job seekers who want more shots on goal.</div>
+        <ul class="plan__features">
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>13 new job links per day</li>
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Daily refresh</li>
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Member dashboard</li>
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Card, M-Pesa, Apple Pay</li>
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Cancel anytime</li>
+        </ul>
+        <button class="btn btn--primary btn--block" onclick="goToPaystackCheckout('pro')">
+          Subscribe — $7/mo
+        </button>
+        <p style="font-size:0.75rem;color:var(--slate-light);text-align:center;margin-top:10px;">Powered by Paystack · Secure checkout</p>
+      </div>
+
+      <!-- Elite -->
+      <div class="plan">
+        <div class="plan__name">Elite</div>
+        <div class="plan__price">$10<span>/mo</span></div>
+        <div class="plan__desc">Maximum coverage for a fast-tracked search.</div>
+        <ul class="plan__features">
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>20 new job links per day</li>
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Daily refresh</li>
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Member dashboard</li>
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Card, M-Pesa, Apple Pay</li>
+          <li class="plan__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Cancel anytime</li>
+        </ul>
+        <button class="btn btn--primary btn--block" onclick="goToPaystackCheckout('elite')">
+          Subscribe — $10/mo
+        </button>
+        <p style="font-size:0.75rem;color:var(--slate-light);text-align:center;margin-top:10px;">Powered by Paystack · Secure checkout</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-head"><div class="eyebrow">FAQ</div><h2>Good to know</h2></div>
+    <div class="steps">
+      <div class="step"><h3>Can I pay from outside Kenya?</h3><p>Yes. Paystack accepts Visa, Mastercard, and Amex cards from any country in the world. International subscribers pay in USD.</p></div>
+      <div class="step"><h3>How do I access my links after paying?</h3><p>After payment, create a free account with the same email you paid with. Your dashboard activates immediately — today's links are ready.</p></div>
+      <div class="step"><h3>How do I cancel?</h3><p>Email hankforster96@gmail.com or manage your subscription directly in your Paystack customer account. No lock-in.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__logo">RemoteJobs</div>
+      <div class="footer__links">
+        <a href="#pricing">Pricing</a>
+        <a href="login.html">Log in</a>
+        <a href="mailto:hankforster96@gmail.com">Contact</a>
+      </div>
+    </div>
+    <div class="footer__bottom">© 2026 RemoteJobs · Payments by Paystack · <a href="mailto:hankforster96@gmail.com" style="color:var(--slate-light)">hankforster96@gmail.com</a></div>
+  </div>
+</footer>
+
+<!-- Supabase + app -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+</body>
+</html>
