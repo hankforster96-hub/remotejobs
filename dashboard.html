@@ -1,21 +1,156 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>RemoteJobs Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — RemoteJobs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h1>Member Dashboard</h1></header>
-<div class="container">
-<div class="card">
-<h2>Available Remote Jobs</h2>
-<div id="jobs"></div>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__logo"><span class="logo__mark"></span>RemoteJobs</div>
+    <nav class="sidebar__nav">
+      <a href="dashboard.html" class="active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        Today's links
+      </a>
+      <a href="#" id="nav-manage">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+        Subscription
+      </a>
+      <a href="admin.html" id="nav-admin" class="hidden">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+        Admin panel
+      </a>
+    </nav>
+    <div class="sidebar__bottom">
+      <div class="sidebar__plan">
+        <div class="label">Current plan</div>
+        <div class="value" id="sidebar-plan-name">Loading…</div>
+      </div>
+      <a href="#" id="logout-btn" class="btn btn--ghost btn--sm btn--block" style="color:var(--cream);border-color:var(--border-dark);">Log out</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div id="loading-state" style="text-align:center;padding:80px 24px;color:var(--slate);">
+      <div style="font-size:2rem;margin-bottom:12px;">⏳</div>
+      <p>Loading your dashboard…</p>
+    </div>
+
+    <div id="main-content" class="hidden">
+      <div class="main__head">
+        <div><h1>Today's job links</h1><p id="head-sub"></p></div>
+        <span id="user-email" style="font-size:0.88rem;color:var(--slate);"></span>
+      </div>
+
+      <!-- No active subscription -->
+      <div id="no-plan-banner" class="locked-banner hidden">
+        <h3>No active subscription found</h3>
+        <p>If you just paid via Paystack, your account activates within a minute — try refreshing. Haven't subscribed yet? Choose a plan below.</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:4px;">
+          <a href="index.html#pricing" class="btn btn--primary">View plans</a>
+          <button class="btn btn--ghost" style="color:#fff;border-color:var(--border-dark);" onclick="location.reload()">🔄 Refresh</button>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="cards" id="stats-cards">
+        <div class="card"><div class="label">Daily quota</div><div class="value" id="stat-quota">—</div><div class="sub">links per day</div></div>
+        <div class="card"><div class="label">Links today</div><div class="value" id="stat-available">—</div><div class="sub">in your feed</div></div>
+        <div class="card"><div class="label">Plan</div><div class="value" id="stat-plan">—</div><div class="sub" id="stat-price">—</div></div>
+      </div>
+
+      <!-- Job feed -->
+      <div class="job-list">
+        <div class="job-list__head">
+          <h2>Your feed</h2>
+          <span style="font-size:0.85rem;color:var(--slate);" id="job-count-label"></span>
+        </div>
+        <div id="job-rows"></div>
+      </div>
+    </div>
+  </main>
 </div>
-</div>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
 <script>
-document.getElementById('jobs').innerHTML =
-'<p>Connect Supabase jobs table to display jobs here.</p>';
+  document.getElementById('logout-btn').addEventListener('click', e => { e.preventDefault(); logOut(); });
+
+  async function init() {
+    const user = await requireAuth();
+    if (!user) return;
+
+    document.getElementById('user-email').textContent = user.email;
+    if (user.email.toLowerCase() === CONFIG.ADMIN_EMAIL.toLowerCase()) {
+      document.getElementById('nav-admin').classList.remove('hidden');
+    }
+
+    const profile = await getProfile(user.id);
+    document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('main-content').classList.remove('hidden');
+
+    const isActive = profile && profile.subscription_status === 'active' && profile.plan;
+    document.getElementById('sidebar-plan-name').textContent = isActive ? (PLANS[profile.plan]?.name || profile.plan) : 'No plan';
+
+    // Subscription management — opens Paystack customer portal or pricing page
+    document.getElementById('nav-manage').addEventListener('click', e => {
+      e.preventDefault();
+      if (isActive) {
+        toast('To manage or cancel your subscription, email hankforster96@gmail.com or log in to your Paystack account at paystack.com/rt/customer-portal', 'success');
+      } else {
+        window.location.href = 'index.html#pricing';
+      }
+    });
+
+    if (!isActive) {
+      document.getElementById('no-plan-banner').classList.remove('hidden');
+      document.getElementById('stats-cards').classList.add('hidden');
+      document.querySelector('.job-list').classList.add('hidden');
+      document.getElementById('head-sub').textContent = 'Subscribe to a plan to see your daily links.';
+      return;
+    }
+
+    const plan = profile.plan;
+    const planInfo = PLANS[plan];
+    document.getElementById('head-sub').textContent = `You're on the ${planInfo.name} plan — ${planInfo.label}.`;
+    document.getElementById('stat-quota').textContent = planInfo.perDay;
+    document.getElementById('stat-plan').textContent = planInfo.name;
+    document.getElementById('stat-price').textContent = `$${planInfo.price}/mo`;
+
+    const jobs = await getJobsForPlan(plan);
+    document.getElementById('stat-available').textContent = jobs.length;
+    document.getElementById('job-count-label').textContent = `${jobs.length} of ${planInfo.perDay} daily links`;
+
+    const container = document.getElementById('job-rows');
+    if (!jobs.length) {
+      container.innerHTML = `<div class="empty-state"><h3>No links yet today</h3><p>The admin adds new job links daily. Check back soon — your feed will fill up automatically.</p></div>`;
+      return;
+    }
+    jobs.forEach(job => {
+      const row = document.createElement('div');
+      row.className = 'job-row';
+      row.innerHTML = `
+        <div class="job-row__main">
+          <div class="job-row__title">${escapeHTML(job.title)}</div>
+          <div class="job-row__meta">
+            <span>${escapeHTML(job.company || '')}</span>
+            ${job.salary ? `<span>·</span><span>${escapeHTML(job.salary)}</span>` : ''}
+          </div>
+        </div>
+        <span class="job-row__date">${formatDate(job.created_at)}</span>
+        <a class="btn btn--primary btn--sm" href="${escapeAttr(job.link)}" target="_blank" rel="noopener">Apply →</a>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  init();
 </script>
 </body>
 </html>
