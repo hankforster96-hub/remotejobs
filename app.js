@@ -10,8 +10,8 @@
 
 /* ── CONFIG ── */
 const CONFIG = {
-  SUPABASE_URL:      "https://flfpduujawqesapgglki.supabase.co",       // paste your Supabase project URL here
-  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsZnBkdXVqYXdxZXNhcGdnbGtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NzI2ODEsImV4cCI6MjA5NzI0ODY4MX0.84y6ABt1iNGzRaKI4fqgK5zj4Ai9xgadpSd1JjWHS-0",  // paste your Supabase anon key here
+  SUPABASE_URL:      "https://flfpduujawqesapgglki.supabase.co",
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsZnBkdXVqYXdxZXNhcGdnbGtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NzI2ODEsImV4cCI6MjA5NzI0ODY4MX0.84y6ABt1iNGzRaKI4fqgK5zj4Ai9xgadpSd1JjWHS-0",
   ADMIN_EMAIL:       "hankforster96@gmail.com",
 
   // Paystack subscription page links (live — do not change)
@@ -74,6 +74,22 @@ async function logOut() {
   window.location.href = "login.html";
 }
 
+async function sendPasswordReset(email) {
+  const sb = getSupabase();
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + "/reset-password.html"
+  });
+  if (error) return { ok: false, message: error.message };
+  return { ok: true };
+}
+
+async function updatePassword(newPassword) {
+  const sb = getSupabase();
+  const { error } = await sb.auth.updateUser({ password: newPassword });
+  if (error) return { ok: false, message: error.message };
+  return { ok: true };
+}
+
 async function getSession() {
   const sb = getSupabase();
   if (!sb) return null;
@@ -104,18 +120,14 @@ async function getAllProfiles() {
 }
 
 /* ── PAYSTACK CHECKOUT ── */
-// Redirects visitor to their chosen Paystack subscription page.
-// After payment Paystack redirects them back to login.html to create their account.
-
 function goToPaystackCheckout(planKey) {
   const plan = PLANS[planKey];
   const link = CONFIG.PAYSTACK_LINKS[planKey];
-  if (!plan || !link) return;
-
-  // Store chosen plan so dashboard knows what to activate after signup
+  if (!plan || !link) {
+    toast("Payment link not found. Please contact support.", "error");
+    return;
+  }
   sessionStorage.setItem("rj_pending_plan", planKey);
-
-  // Send them straight to the Paystack payment page
   window.location.href = link;
 }
 
