@@ -30,6 +30,9 @@
         <form id="login-form">
           <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com" required></div>
           <div class="field"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" required></div>
+          <div class="field-row" style="justify-content:flex-end;margin-bottom:18px;margin-top:-8px;">
+            <a href="#" id="show-forgot">Forgot password?</a>
+          </div>
           <button type="submit" class="btn btn--primary btn--block" id="login-btn">Log in</button>
         </form>
         <p class="auth-foot mt-24">Don't have an account? <a href="#" id="show-signup">Sign up free</a></p>
@@ -47,6 +50,17 @@
         </form>
         <p class="auth-foot mt-24">Already have an account? <a href="#" id="show-login">Log in</a></p>
         <p class="auth-foot" style="font-size:0.8rem;color:var(--slate-light);margin-top:8px;">Haven't subscribed yet? <a href="index.html#pricing" style="color:var(--orange);">View plans →</a></p>
+      </div>
+
+      <!-- FORGOT PASSWORD -->
+      <div id="forgot-view" class="hidden">
+        <h1>Reset your password</h1>
+        <p class="sub">Enter your email and we'll send you a link to set a new password.</p>
+        <form id="forgot-form">
+          <div class="field"><label>Email</label><input type="email" id="forgot-email" placeholder="you@example.com" required></div>
+          <button type="submit" class="btn btn--primary btn--block" id="forgot-btn">Send reset link</button>
+        </form>
+        <p class="auth-foot mt-24"><a href="#" id="back-from-forgot">Back to login</a></p>
       </div>
 
       <!-- SUCCESS (shown after signup - waiting for email confirm) -->
@@ -90,6 +104,32 @@
     e.preventDefault();
     document.getElementById('confirm-view').classList.add('hidden');
     document.getElementById('login-view').classList.remove('hidden');
+  });
+
+  document.getElementById('show-forgot').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('login-view').classList.add('hidden');
+    document.getElementById('forgot-view').classList.remove('hidden');
+  });
+  document.getElementById('back-from-forgot').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('forgot-view').classList.add('hidden');
+    document.getElementById('login-view').classList.remove('hidden');
+  });
+  document.getElementById('forgot-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('forgot-btn');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    const email = document.getElementById('forgot-email').value.trim();
+    const result = await sendPasswordReset(email);
+    if (result.ok) {
+      toast('Reset link sent! Check your email.', 'success');
+      document.getElementById('forgot-view').classList.add('hidden');
+      document.getElementById('login-view').classList.remove('hidden');
+    } else {
+      toast(result.message, 'error');
+    }
+    btn.disabled = false; btn.textContent = 'Send reset link';
   });
 
   // LOGIN
