@@ -158,6 +158,16 @@
     const password = document.getElementById('signup-password').value;
     const result = await signUp(email, password);
     if (result.ok) {
+      // If they came via affiliate link, save ref_code to their profile
+      const refCode = sessionStorage.getItem('rj_ref_code');
+      if (refCode && result.user?.id) {
+        const sb = getSupabase();
+        await sb.from('profiles').update({ ref_code: refCode }).eq('id', result.user.id);
+        // Also increment click→signup count for affiliate
+        await sb.from('affiliates')
+          .update({ total_clicks: sb.raw('total_clicks + 1') })
+          .eq('ref_code', refCode);
+      }
       document.getElementById('signup-view').classList.add('hidden');
       document.getElementById('confirm-view').classList.remove('hidden');
     } else {
