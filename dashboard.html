@@ -21,7 +21,10 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
         Subscription
       </a>
-      <a href="admin.html" id="nav-admin" class="hidden">
+      <a href="affiliate.html" id="nav-affiliate">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        Earn — Affiliate
+      </a>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
         Admin panel
       </a>
@@ -60,8 +63,9 @@
       <!-- Stats row -->
       <div class="cards" id="stats-cards">
         <div class="card"><div class="label">Daily quota</div><div class="value" id="stat-quota">—</div><div class="sub">links per day</div></div>
-        <div class="card"><div class="label">Links today</div><div class="value" id="stat-available">—</div><div class="sub">in your feed</div></div>
+        <div class="card"><div class="label">New today</div><div class="value" id="stat-available">—</div><div class="sub">unseen links</div></div>
         <div class="card"><div class="label">Plan</div><div class="value" id="stat-plan">—</div><div class="sub" id="stat-price">—</div></div>
+        <div class="card"><div class="label">In your queue</div><div class="value" id="stat-queue">—</div><div class="sub">coming next days</div></div>
       </div>
 
       <!-- Job feed -->
@@ -123,18 +127,26 @@
     document.getElementById('stat-plan').textContent = planInfo.name;
     document.getElementById('stat-price').textContent = `$${planInfo.price}/mo`;
 
-    const jobs = await getJobsForPlan(plan);
+    // Load queue stats and jobs in parallel
+    const [jobs, queueCount] = await Promise.all([
+      getJobsForPlan(plan),
+      getQueueStats(plan)
+    ]);
+
     document.getElementById('stat-available').textContent = jobs.length;
-    document.getElementById('job-count-label').textContent = `${jobs.length} of ${planInfo.perDay} daily links`;
+    document.getElementById('stat-queue').textContent = queueCount;
+    document.getElementById('job-count-label').textContent = `${jobs.length} fresh links · ${queueCount} more queued`;
 
     const container = document.getElementById('job-rows');
     if (!jobs.length) {
-      container.innerHTML = `<div class="empty-state"><h3>No links yet today</h3><p>The admin adds new job links daily. Check back soon — your feed will fill up automatically.</p></div>`;
+      container.innerHTML = `<div class="empty-state"><h3>No links yet today</h3><p>The AI agent adds new job links daily. Check back soon — your feed will fill up automatically.</p></div>`;
       return;
     }
     jobs.forEach(job => {
       const row = document.createElement('div');
       row.className = 'job-row';
+      const regionBadge = job.region ? `<span style="font-size:0.72rem;padding:2px 8px;border-radius:999px;background:var(--violet-dim);color:var(--violet);font-weight:600;">${escapeHTML(job.region)}</span>` : '';
+      const catBadge = job.category_label ? `<span class="job-row__tag">${escapeHTML(job.category_label)}</span>` : '';
       row.innerHTML = `
         <div class="job-row__main">
           <div class="job-row__title">${escapeHTML(job.title)}</div>
@@ -142,6 +154,7 @@
             <span>${escapeHTML(job.company || '')}</span>
             ${job.salary ? `<span>·</span><span>${escapeHTML(job.salary)}</span>` : ''}
           </div>
+          <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">${catBadge}${regionBadge}</div>
         </div>
         <span class="job-row__date">${formatDate(job.created_at)}</span>
         <a class="btn btn--primary btn--sm" href="${escapeAttr(job.link)}" target="_blank" rel="noopener">Apply →</a>
